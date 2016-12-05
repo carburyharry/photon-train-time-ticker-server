@@ -6,6 +6,9 @@ var app = express();
 
 var port = process.env.PORT || 8080;
 
+var northbound = ['To Malahide','To Howth', 'To Dublin Connolly', 'To Dublin Pearse']
+var southbound = ['To Greystones','To Bray', 'To Dublin Connolly', 'To Dublin Pearse', 'Grand Canal Dock']
+
 app.get('/:station/:direction/:time', function (req, res) {
   getTrainTime(req.params.station, req.params.direction, req.params.time, function(err, result){
     if(err){
@@ -27,9 +30,17 @@ var getTrainTime = function(station, direction, time, callback) {
         callback(err);
       } else {
         var res = _.chain(res.body.ArrayOfObjStationData.objStationData)
-                .filter({'Direction' : [direction]})
+                .sortBy(res, 'Exparrival')
                 .transform(function(result, value, key){
-                  result[key]= '\n' +value.Destination + ' - ' + value.Duein + ' mins'
+                  if(direction.localCompare('Northbound')){
+                    if(_.includes(northbound, value.Direction[0])){
+                      result[key]= '\n' +value.Destination + ' - ' + value.Duein + ' mins'
+                    }
+                  } else if (direction.localCompare('Southbound')) {
+                    if(_.includes(southbound, value.Direction[0])){
+                      result[key]= '\n' +value.Destination + ' - ' + value.Duein + ' mins'
+                    }
+                  }
                 }).value();
         var resStr = getCurrentTime();
         if(res.length > 0){
