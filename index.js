@@ -32,11 +32,12 @@ var getTrainTime = function(station, direction, time, callback) {
         var res = _.chain(res.body.ArrayOfObjStationData.objStationData)
                 .sortBy(res, 'Exparrival')
                 .transform(function(result, value, key){
-                  if(direction.localCompare('Northbound')){
+                  if(_.isMatch(direction, 'Northbound')){
                     if(_.includes(northbound, value.Direction[0])){
                       result[key]= '\n' +value.Destination + ' - ' + value.Duein + ' mins'
                     }
-                  } else if (direction.localCompare('Southbound')) {
+                  }
+                  else if (_.isMatch(direction, 'Southbound')) {
                     if(_.includes(southbound, value.Direction[0])){
                       result[key]= '\n' +value.Destination + ' - ' + value.Duein + ' mins'
                     }
