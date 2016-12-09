@@ -29,20 +29,33 @@ var getTrainTime = function(station, direction, time, callback) {
       if (err || !res.ok) {
         callback(err);
       } else {
-        var res = _.chain(res.body.ArrayOfObjStationData.objStationData)
-                .sortBy(res, 'Exparrival')
-                .transform(function(result, value, key){
-                  if(_.isMatch(direction, 'Northbound')){
-                    if(_.includes(northbound, value.Direction[0])){
-                      result[key]= '\n' +value.Destination + ' - ' + value.Duein + ' mins'
+        var data = res.body.ArrayOfObjStationData.objStationData;
+        var normalApi = false;
+        if(_.includes(data[0].Direction, 'Northbound' || 'Southbound')) {
+          normalApi = true;
+        }
+        if(normalApi) {
+          var res = _.chain(data)
+                  .filter({'Direction' : [direction]})
+                  .transform(function(result, value, key){
+                    result[key]= '\n' +value.Destination + ' - ' + value.Duein + ' mins'
+                  }).value();
+        } else {
+          var res = _.chain(data)
+                  .sortBy(res, 'Exparrival')
+                  .transform(function(result, value, key){
+                    if(_.isMatch(direction, 'Northbound')){
+                      if(_.includes(northbound, value.Direction[0])){
+                        result[key]= '\n' +value.Destination + ' - ' + value.Duein + ' mins'
+                      }
                     }
-                  }
-                  else if (_.isMatch(direction, 'Southbound')) {
-                    if(_.includes(southbound, value.Direction[0])){
-                      result[key]= '\n' +value.Destination + ' - ' + value.Duein + ' mins'
+                    else if (_.isMatch(direction, 'Southbound')) {
+                      if(_.includes(southbound, value.Direction[0])){
+                        result[key]= '\n' +value.Destination + ' - ' + value.Duein + ' mins'
+                      }
                     }
-                  }
-                }).value();
+                  }).value();
+        }
         var resStr = getCurrentTime();
         if(res.length > 0){
           res.forEach(function(value) {
