@@ -4,7 +4,7 @@ var _ = require('lodash');
 var express = require('express');
 var app = express();
 
-var port = process.env.PORT || 8080;
+const port = process.env.PORT || 8080;
 
 var northbound = ['To Malahide','To Howth', 'To Dublin Connolly', 'To Dublin Pearse']
 var southbound = ['To Greystones','To Bray', 'To Dublin Connolly', 'To Dublin Pearse', 'Grand Canal Dock']
