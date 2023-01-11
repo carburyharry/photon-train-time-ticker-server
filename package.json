@@ -1,8 +1,10 @@
 {
   "name": "api",
   "version": "1.0.0",
-  "description": "",
+  "description": "Irish rail server for ticker project",
   "main": "index.js",
+  "repository": "https://github.com/carburyharry/photon-train-time-ticker-server",
+  "author": "LaGref did all of the work. I just changed it to run for me"
   "scripts": {
     "start": "node index.js"
   },
